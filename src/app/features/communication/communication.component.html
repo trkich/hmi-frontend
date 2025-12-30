@@ -1,0 +1,73 @@
+<div class="flex flex-col" style="height: calc(100vh - 4rem); margin: -1.5rem;">
+  <div class="p-4 border-b border-base-300 bg-base-200">
+    <h1 class="text-2xl font-semibold text-base-content mb-2">{{ 'communication.title' | translate }}</h1>
+    <div class="flex items-center gap-4 mt-4">
+    <input
+      type="text"
+      [(ngModel)]="unitId"
+      placeholder="Unit ID (optional)"
+      class="input input-bordered bg-base-100 text-base-content w-48"
+    />
+    <button (click)="startRun()" class="btn btn-primary" [disabled]="connected()">
+      {{ 'communication.start' | translate }}
+    </button>
+    <div class="text-sm text-base-content/70">
+      {{ 'communication.signalr' | translate }}: {{ connected() ? ('communication.connected' | translate) : ('communication.disconnected' | translate) }}
+    </div>
+    <div class="text-sm text-base-content/70">
+      {{ 'communication.instance' | translate }}: {{ instanceId() || '-' }}
+    </div>
+    <div class="text-sm text-base-content/70 ml-auto">
+      {{ 'communication.progress' | translate }}: {{ progress() }}%
+    </div>
+    </div>
+  </div>
+
+  <div class="flex-1 grid grid-cols-[1fr_300px] overflow-hidden">
+    <!-- Diagram Area -->
+    <div class="relative border-r border-base-300 overflow-hidden bg-base-100" style="height: 100%;">
+      <ng-diagram
+        [model]="diagramModel()"
+        [nodeTemplateMap]="nodeTemplateMap()"
+        (selectionChanged)="onSelectionChanged($event)"
+        (diagramInit)="onDiagramInit($event)"
+        style="width: 100%; height: 100%;"
+      >
+        <ng-diagram-background />
+      </ng-diagram>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="bg-base-200 p-4 overflow-y-auto">
+      <h3 class="text-lg font-semibold text-base-content mb-4">
+        {{ 'communication.latestEvent' | translate }}
+      </h3>
+
+      @if (!selectedEvent()) {
+        <div class="text-base-content/70">{{ 'communication.noEvents' | translate }}</div>
+      } @else {
+        <div class="space-y-2 mb-6">
+          <div><strong class="text-base-content">{{ 'communication.step' | translate }}:</strong> {{ selectedEvent()!.step }}</div>
+          <div><strong class="text-base-content">{{ 'communication.state' | translate }}:</strong> {{ selectedEvent()!.state }}</div>
+          <div><strong class="text-base-content">{{ 'communication.message' | translate }}:</strong> {{ selectedEvent()!.message || '-' }}</div>
+          <div><strong class="text-base-content">{{ 'communication.time' | translate }}:</strong> {{ selectedEvent()!.ts }}</div>
+        </div>
+
+        <h4 class="text-base font-semibold text-base-content mb-2">{{ 'communication.output' | translate }}</h4>
+        <pre class="bg-base-300 p-3 rounded text-xs text-base-content overflow-auto max-h-64">{{
+          formatJsonOutput(selectedEvent()!.output)
+        }}</pre>
+      }
+
+      <h3 class="text-lg font-semibold text-base-content mt-6 mb-4">
+        {{ 'communication.eventLog' | translate }}
+      </h3>
+      <ol class="list-decimal list-inside space-y-1 text-sm text-base-content/70">
+        @for (event of events().slice(-30); track $index) {
+          <li>{{ event.step }} — {{ event.state }} — {{ event.percent }}%</li>
+        }
+      </ol>
+    </div>
+  </div>
+</div>
+

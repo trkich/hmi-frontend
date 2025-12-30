@@ -1,0 +1,49 @@
+<div class="dropdown dropdown-end">
+  <div
+    tabindex="0"
+    role="button"
+    (click)="toggleDropdown()"
+    class="btn btn-ghost btn-sm flex items-center gap-2 text-base-content"
+  >
+    <span>{{ getCurrentLanguageLabel() }}</span>
+    <svg
+      class="w-4 h-4 transition-transform"
+      [class.rotate-180]="dropdownOpen()"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 9l-7 7-7-7"
+      ></path>
+    </svg>
+  </div>
+  <ul
+    *ngIf="dropdownOpen()"
+    tabindex="0"
+    class="dropdown-content menu bg-base-100 rounded-box z-50 w-40 p-2 shadow-lg border border-base-300 mt-1"
+    (click)="$event.stopPropagation()"
+  >
+    <li *ngFor="let lang of languages">
+      <button
+        (click)="setLanguage(lang.code); closeDropdown()"
+        [class.active]="currentLanguage() === lang.code"
+        class="text-base-content"
+      >
+        <span>{{ lang.flag }}</span>
+        <span>{{ lang.label }}</span>
+      </button>
+    </li>
+  </ul>
+</div>
+
+<!-- Backdrop -->
+<div
+  *ngIf="dropdownOpen()"
+  (click)="closeDropdown()"
+  class="fixed inset-0 z-40"
+></div>
+

@@ -1,0 +1,84 @@
+<div class="card bg-base-200 shadow border border-base-300 overflow-hidden">
+  <!-- Header with Search and Filter -->
+  <app-table-header
+    *ngIf="showSearch || hasFilters()"
+    [showSearch]="showSearch"
+    [showFilter]="hasFilters()"
+    [filtersCount]="filtersCount()"
+    [initialSearchValue]="searchValue()"
+    (searchChange)="onSearchChange($event)"
+    (filterClick)="toggleFilters()"
+  ></app-table-header>
+
+  <!-- Table -->
+  <div *ngIf="paginatedData().length > 0" class="overflow-x-auto">
+    <table class="table w-full">
+      <thead>
+        <ng-container *ngTemplateOutlet="theadTemplate"></ng-container>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paginatedData(); let index = index" class="hover">
+          <ng-container *ngTemplateOutlet="tableRowTemplate; context: { $implicit: item, index: index }"></ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="paginatedData().length === 0" class="p-8 text-center text-base-content/70">
+    {{ 'common.noData' | translate }}
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="pagination && totalPages() > 1" class="p-4 border-t border-base-300 flex justify-center">
+    <div class="join">
+      <!-- Previous Button -->
+      <button
+        class="join-item btn"
+        [class.btn-disabled]="currentPage() === 1"
+        (click)="onPageChange(currentPage() - 1)"
+        [attr.aria-label]="'common.previous' | translate"
+      >
+        «
+      </button>
+
+      <!-- Page Numbers -->
+      <button
+        *ngFor="let page of pages()"
+        class="join-item btn"
+        [class.btn-active]="page === currentPage()"
+        [class.btn-disabled]="page === '...'"
+        (click)="typeof page === 'number' && onPageChange(page)"
+        [attr.aria-label]="typeof page === 'number' ? ('common.page' | translate) + ' ' + page : undefined"
+        [attr.aria-current]="page === currentPage() ? 'page' : null"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Next Button -->
+      <button
+        class="join-item btn"
+        [class.btn-disabled]="currentPage() === totalPages()"
+        (click)="onPageChange(currentPage() + 1)"
+        [attr.aria-label]="'common.next' | translate"
+      >
+        »
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Modal -->
+  <app-table-filters
+    *ngIf="hasFilters()"
+    [visible]="filtersVisible()"
+    [filters]="filters || []"
+    [activeFilters]="activeFilters()"
+    (filtersChange)="onFiltersChange($event)"
+    (close)="onFiltersClose()"
+  >
+    <ng-container *ngIf="filtersTemplate">
+      <ng-container *ngTemplateOutlet="filtersTemplate; context: { form: activeFilters() }"></ng-container>
+    </ng-container>
+  </app-table-filters>
+</div>
+

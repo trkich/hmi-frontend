@@ -1,0 +1,109 @@
+<div>
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="flex items-center justify-center py-12">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="alert alert-error mb-4">
+    <span>{{ error() }}</span>
+  </div>
+
+  <!-- Unit Details -->
+  <div *ngIf="!loading() && !error() && unit() as unit" class="space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-semibold text-base-content">
+        {{ 'unit.title' | translate }} #{{ unit.id }}
+      </h1>
+      <div class="flex gap-2">
+        <a
+          [routerLink]="['/communication']"
+          [queryParams]="{ unitId: unit.id }"
+          class="btn btn-secondary"
+        >
+          AI Communication
+        </a>
+        <a [routerLink]="['/unit', unit.id, 'edit']" class="btn btn-primary">
+          {{ 'common.edit' | translate }}
+        </a>
+        <a [routerLink]="['/unit']" class="btn btn-ghost">
+          {{ 'common.close' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="card bg-base-200 shadow">
+      <div class="card-body">
+        <div class="space-y-4">
+          <div>
+            <label class="label">
+              <span class="label-text text-base-content font-medium">{{ 'unit.id' | translate }}</span>
+            </label>
+            <div class="text-base-content text-lg">{{ unit.id }}</div>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text text-base-content font-medium">{{ 'unit.status' | translate }}</span>
+            </label>
+            <div>
+              <span class="badge badge-lg" [ngClass]="getStatusClass(unit.status)">
+                {{ getStatusText(unit.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Communication history -->
+    <div class="card bg-base-200 shadow mt-4">
+      <div class="card-body">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-base-content">
+            AI Communication history
+          </h2>
+        </div>
+
+        <div *ngIf="aiStatusLoading()" class="flex items-center justify-center py-6">
+          <span class="loading loading-spinner loading-md"></span>
+        </div>
+
+        <div *ngIf="aiStatusError() && !aiStatusLoading()" class="alert alert-warning mb-2">
+          <span>{{ aiStatusError() }}</span>
+        </div>
+
+        <div *ngIf="!aiStatusLoading() && !aiStatusError() && aiStatus() as status">
+          <div *ngIf="status.count === 0" class="text-sm text-base-content/70">
+            No AI communication runs for this unit yet.
+          </div>
+
+          <div *ngIf="status.count > 0" class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Instance ID</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Last updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let inst of status.instances">
+                  <td class="font-mono text-xs">{{ inst.instanceId }}</td>
+                  <td>
+                    <span class="badge badge-outline">
+                      {{ inst.runtimeStatus }}
+                    </span>
+                  </td>
+                  <td>{{ inst.createdTime | date: 'short' }}</td>
+                  <td>{{ inst.lastUpdatedTime | date: 'short' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

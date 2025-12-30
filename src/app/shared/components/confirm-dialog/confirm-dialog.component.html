@@ -1,0 +1,27 @@
+<dialog [class.modal-open]="isOpen" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg text-base-content mb-4">{{ title }}</h3>
+    <p class="text-base-content/70 mb-4">{{ message }}</p>
+    <div class="modal-action">
+      <button
+        (click)="close()"
+        class="btn btn-ghost"
+        [disabled]="loading"
+      >
+        {{ cancelText | translate }}
+      </button>
+      <button
+        (click)="confirm()"
+        [class]="'btn ' + confirmButtonClass"
+        [disabled]="loading"
+      >
+        <span *ngIf="loading" class="loading loading-spinner loading-sm"></span>
+        <span *ngIf="!loading">{{ confirmText | translate }}</span>
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="close()">close</button>
+  </form>
+</dialog>
+

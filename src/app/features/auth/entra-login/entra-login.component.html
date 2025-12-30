@@ -1,0 +1,48 @@
+<div class="min-h-screen flex items-center justify-center px-4 bg-base-100">
+  <div class="card w-full max-w-md bg-base-200 shadow-xl">
+    <div class="card-body">
+      <h1 class="card-title justify-center text-2xl">{{ 'common.welcome' | translate }}</h1>
+      <p class="text-center text-base-content/70 mb-4">
+        {{ 'auth.signInWithMicrosoft' | translate }}
+      </p>
+
+      <!-- Already logged in -->
+      <div *ngIf="account()" class="space-y-4">
+        <div class="alert bg-base-300">
+          <div>
+            <p class="text-sm mb-2 text-base-content">{{ 'auth.loggedInAs' | translate }}:</p>
+            <p class="text-sm font-semibold text-primary">{{ account()?.username }}</p>
+            <p class="text-xs text-base-content/70 mt-1">{{ account()?.name }}</p>
+          </div>
+        </div>
+        <p class="text-xs text-base-content/70 text-center">{{ 'common.loading' | translate }}...</p>
+      </div>
+
+      <!-- Login button -->
+      <div *ngIf="!account()" class="card-actions justify-center">
+        <button
+          (click)="loginWithPopup()"
+          [disabled]="loading()"
+          class="btn btn-primary w-full"
+        >
+          <span *ngIf="!loading()" class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V14.4H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z"/>
+            </svg>
+            {{ 'auth.signIn' | translate }}
+          </span>
+          <span *ngIf="loading()" class="flex items-center gap-2">
+            <span class="loading loading-spinner loading-sm"></span>
+            {{ 'auth.signingIn' | translate }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="error()" class="alert alert-error mt-4">
+        <span>{{ error() }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+

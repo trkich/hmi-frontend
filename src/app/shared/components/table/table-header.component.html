@@ -1,0 +1,29 @@
+<div class="p-4 border-b border-base-300 flex items-center justify-end gap-4">
+  <!-- Search Input -->
+  <div *ngIf="showSearch" class="max-w-xs">
+    <div class="form-control">
+      <input
+        type="text"
+        [value]="searchInput()"
+        (input)="onSearchInput($event)"
+        [placeholder]="'common.search' | translate"
+        class="input input-bordered w-full bg-base-100 text-base-content"
+      />
+    </div>
+  </div>
+
+  <!-- Filter Button -->
+  <div *ngIf="showFilter" class="flex items-center gap-2">
+    <button
+      (click)="filterClick.emit()"
+      class="btn btn-ghost btn-sm"
+      [class.btn-primary]="filtersCount > 0"
+    >
+      <i class="fa-solid fa-filter"></i>
+      <span *ngIf="filtersCount > 0" class="badge badge-sm badge-primary ml-1">
+        {{ filtersCount }}
+      </span>
+    </button>
+  </div>
+</div>
+

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+// Active menu item styling for DaisyUI menu
+.menu a.active {
+  background-color: hsl(var(--p) / 0.2) !important;
+  color: hsl(var(--p)) !important;
+  font-weight: 600;
+}
+

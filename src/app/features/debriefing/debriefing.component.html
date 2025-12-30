@@ -1,0 +1,113 @@
+<div>
+  <h1 class="text-2xl font-semibold text-base-content mb-2">{{ 'debriefing.title' | translate }}</h1>
+
+  <!-- Status Card -->
+  <div class="card bg-base-200 shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title text-base-content mb-4">
+        <i class="fa-solid fa-info-circle"></i>
+        {{ 'debriefing.status' | translate }}
+      </h2>
+      <div class="alert" [ngClass]="{
+        'alert-info': !isListening() && isInitialized(),
+        'alert-success': isListening(),
+        'alert-warning': !isInitialized()
+      }">
+        <span class="text-base-content">{{ status() || 'Initializing...' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Card -->
+  <div class="card bg-base-200 shadow mb-6">
+    <div class="card-body">
+      <h2 class="card-title text-base-content mb-4">
+        <i class="fa-solid fa-microphone"></i>
+        {{ 'debriefing.controls' | translate }}
+      </h2>
+
+      <!-- Language Selection -->
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-base-content font-medium">{{ 'debriefing.language' | translate }}</span>
+        </label>
+        <select
+          [value]="selectedLanguage()"
+          (change)="onLanguageChange($any($event.target).value)"
+          class="select select-bordered w-full bg-base-100 text-base-content"
+          [disabled]="isListening()"
+        >
+          <option *ngFor="let lang of languages" [value]="lang.code">
+            {{ lang.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4">
+        <button
+          (click)="startRecognition()"
+          class="btn btn-primary flex-1"
+          [disabled]="!isInitialized() || isListening()"
+        >
+          <i class="fa-solid fa-play"></i>
+          {{ 'debriefing.start' | translate }}
+        </button>
+
+        <button
+          (click)="stopRecognizer()"
+          class="btn btn-error flex-1"
+          [disabled]="!isListening()"
+        >
+          <i class="fa-solid fa-stop"></i>
+          {{ 'debriefing.stop' | translate }}
+        </button>
+
+        <button
+          (click)="clearText()"
+          class="btn btn-ghost"
+          [disabled]="!recognizedText()"
+        >
+          <i class="fa-solid fa-trash"></i>
+          {{ 'debriefing.clear' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recognized Text Card -->
+  <div class="card bg-base-200 shadow">
+    <div class="card-body">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="card-title text-base-content">
+          <i class="fa-solid fa-text-width"></i>
+          {{ 'debriefing.recognizedText' | translate }}
+        </h2>
+        <div class="badge badge-info" *ngIf="recognizedText()">
+          {{ recognizedText().split(' ').length }} {{ 'debriefing.words' | translate }}
+        </div>
+      </div>
+
+      <div class="form-control">
+        <textarea
+          class="textarea textarea-bordered w-full h-64 bg-base-100 text-base-content"
+          [value]="recognizedText()"
+          readonly
+          [placeholder]="'debriefing.textPlaceholder' | translate"
+        ></textarea>
+      </div>
+
+      <!-- Copy Button -->
+      <div class="card-actions justify-end mt-4" *ngIf="recognizedText()">
+        <button
+          (click)="copyToClipboard()"
+          class="btn btn-sm btn-outline"
+        >
+          <i class="fa-solid fa-copy"></i>
+          {{ 'debriefing.copy' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

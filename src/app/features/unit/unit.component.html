@@ -1,0 +1,85 @@
+<div>
+  <h1 class="text-2xl font-semibold text-base-content mb-2">{{ 'unit.title' | translate }}</h1>
+  <p class="text-sm text-base-content/70 mb-6">
+    {{ 'unit.description' | translate }}
+  </p>
+
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="flex items-center justify-center py-12">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="alert alert-error mb-4">
+    <span>{{ error() }}</span>
+  </div>
+
+  <div *ngIf="!loading() && !error()" class="mt-8">  
+    <app-table
+      [data]="units()"
+      [showSearch]="true"
+      [filters]="unitFilters"
+      [pagination]="true"
+      [itemsPerPage]="1"
+      (pageChange)="onPageChange($event)"
+    >
+      <ng-template #thead>
+        <tr>
+          <th class="text-base-content">{{ 'unit.id' | translate }}</th>
+          <th class="text-base-content">{{ 'unit.status' | translate }}</th>
+          <th class="text-base-content">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </ng-template>
+  
+      <ng-template #tableRow let-item let-index="index">
+        <td class="text-base-content">{{ item.id }}</td>
+        <td>
+          <span class="badge" [ngClass]="getStatusClass(item.status)">
+            {{ getStatusText(item.status) }}
+          </span>
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <a
+              [routerLink]="['/unit', item.id]"
+              class="btn btn-ghost btn-xs btn-circle"
+              [attr.title]="'common.view' | translate"
+            >
+              <i class="fa-solid fa-eye"></i>
+            </a>
+            <a
+              [routerLink]="['/unit', item.id, 'edit']"
+              class="btn btn-ghost btn-xs btn-circle"
+              [attr.title]="'common.edit' | translate"
+            >
+              <i class="fa-solid fa-pen"></i>
+            </a>
+            <button
+              (click)="openDeleteModal(item)"
+              class="btn btn-ghost btn-xs btn-circle text-error"
+              [attr.title]="'common.delete' | translate"
+            >
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </ng-template>
+  
+      <ng-template #filters let-form>
+        <!-- Custom filters content can go here if needed -->
+      </ng-template>
+    </app-table>
+  </div>
+</div>
+
+
+<!-- Delete Confirmation Modal -->
+<app-confirm-dialog
+  [isOpen]="deleteModalOpen()"
+  [title]="('common.delete' | translate) + ' ' + ('unit.title' | translate)"
+  [message]="('common.confirmDelete' | translate) + ' ' + ('unit.title' | translate) + ' #' + (selectedUnit()?.id || '') + '?'"
+  [loading]="deleting()"
+  (confirmed)="confirmDelete()"
+  (cancelled)="closeDeleteModal()"
+></app-confirm-dialog>
+

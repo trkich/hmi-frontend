@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "ng-diagram/styles.css";
+@plugin "daisyui";
+
+body {
+  @apply bg-slate-950 dark:bg-white text-slate-100 dark:text-slate-900;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}

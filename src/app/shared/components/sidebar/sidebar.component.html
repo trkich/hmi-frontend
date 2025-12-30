@@ -1,0 +1,46 @@
+<aside class="w-64 bg-base-200 border-r border-base-300 flex flex-col h-screen sticky top-0">
+  <!-- Logo -->
+  <div class="p-6 border-b border-base-300">
+    <div class="flex items-center gap-2">
+      <div class="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
+        <span class="text-primary-content font-bold text-xs">T</span>
+      </div>
+      <span class="font-semibold text-sm text-base-content">TKE Dashboard</span>
+    </div>
+  </div>
+
+  <!-- Menu Items -->
+  <nav class="flex-1 overflow-y-auto py-4">
+    <ul class="menu menu-vertical w-full px-3">
+      <li *ngFor="let item of menuItems">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="getRouterLinkActiveOptions(item.route)"
+          [ngClass]="{
+            'bg-primary/20': isActive(item.route),
+            'text-primary': isActive(item.route),
+            'font-semibold': isActive(item.route)
+          }"
+          class="text-base-content"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              [attr.d]="item.icon"
+            ></path>
+          </svg>
+          <span>{{ item.labelKey | translate }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+

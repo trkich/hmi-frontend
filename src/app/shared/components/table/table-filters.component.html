@@ -1,0 +1,78 @@
+<!-- Backdrop -->
+<div
+  *ngIf="visible"
+  class="fixed inset-0 bg-black/50 z-40"
+  (click)="closeFilters()"
+  [@fadeInOut]
+></div>
+
+<!-- Drawer -->
+<div
+  *ngIf="visible"
+  class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-base-100 shadow-xl overflow-hidden flex flex-col"
+  [@slideInOut]
+>
+  <!-- Header -->
+  <header class="flex items-center justify-between px-4 py-3 border-b border-base-300">
+    <h3 class="text-xl font-semibold text-base-content">{{ 'common.filter' | translate }}</h3>
+    <button (click)="closeFilters()" class="btn btn-sm btn-circle btn-ghost text-base-content">
+      <i class="fa-solid fa-times"></i>
+    </button>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 overflow-y-auto px-4 py-4">
+    <form>
+      <div class="space-y-4">
+        <div *ngFor="let filter of filters" class="form-control">
+          <label class="label">
+            <span class="label-text text-base-content font-medium">{{ getFilterLabel(filter) }}</span>
+          </label>
+          <select
+            *ngIf="filter.type === 'select'"
+            [(ngModel)]="localFilters[filter.key]"
+            name="filter-{{ filter.key }}"
+            class="select select-bordered w-full bg-base-100 text-base-content"
+          >
+            <option [value]="''">{{ getSelectPlaceholder(filter) }}</option>
+            <option *ngFor="let option of filter.options" [value]="option.value">
+              {{ getOptionLabel(option) }}
+            </option>
+          </select>
+          <select
+            *ngIf="filter.type === 'multiselect'"
+            [(ngModel)]="localFilters[filter.key]"
+            name="filter-{{ filter.key }}"
+            multiple
+            class="select select-bordered w-full bg-base-100 text-base-content"
+          >
+            <option *ngFor="let option of filter.options" [value]="option.value">
+              {{ getOptionLabel(option) }}
+            </option>
+          </select>
+          <input
+            *ngIf="filter.type === 'text'"
+            type="text"
+            [(ngModel)]="localFilters[filter.key]"
+            name="filter-{{ filter.key }}"
+            [placeholder]="getSearchPlaceholder(filter)"
+            class="input input-bordered w-full bg-base-100 text-base-content"
+          />
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="sticky bottom-0 border-t border-base-300 bg-base-100 p-4">
+    <div class="flex items-center justify-start gap-2">
+      <button (click)="applyFilters()" class="btn btn-primary">
+        {{ 'common.filter' | translate }}
+      </button>
+      <button (click)="resetFilters()" class="btn btn-ghost">
+        {{ 'common.reset' | translate }}
+      </button>
+    </div>
+  </footer>
+</div>
+
