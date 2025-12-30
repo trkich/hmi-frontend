@@ -36,6 +36,7 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "dist/laundryscheduler.client" # Built app content directory - optional
+          config_file_location: .oryxrc.json
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
