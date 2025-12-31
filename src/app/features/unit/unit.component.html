@@ -42,21 +42,21 @@
           <div class="flex gap-2">
             <a
               [routerLink]="['/unit', item.id]"
-              class="btn btn-ghost btn-xs btn-circle"
+              class="btn btn-ghost btn-xs btn-circle text-base-content hover:text-primary"
               [attr.title]="'common.view' | translate"
             >
               <i class="fa-solid fa-eye"></i>
             </a>
             <a
               [routerLink]="['/unit', item.id, 'edit']"
-              class="btn btn-ghost btn-xs btn-circle"
+              class="btn btn-ghost btn-xs btn-circle text-base-content hover:text-primary"
               [attr.title]="'common.edit' | translate"
             >
               <i class="fa-solid fa-pen"></i>
             </a>
             <button
               (click)="openDeleteModal(item)"
-              class="btn btn-ghost btn-xs btn-circle text-error"
+              class="btn btn-ghost btn-xs btn-circle text-error hover:text-error"
               [attr.title]="'common.delete' | translate"
             >
               <i class="fa-solid fa-trash"></i>
