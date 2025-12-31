@@ -85,7 +85,7 @@ export class UnitViewComponent implements OnInit {
     this.aiStatusError.set(null);
 
     this.http
-      .get<StatusByUnitResponse>(`${environment.aiApiBaseUrl}/api/status/by-unit/${unitId}`)
+      .get<StatusByUnitResponse>(`${environment.apiBaseUrl}/unit-status/by-unit/${unitId}`)
       .subscribe({
         next: (data) => {
           this.aiStatus.set(data);

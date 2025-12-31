@@ -189,7 +189,7 @@ export class CommunicationComponent implements OnInit, OnDestroy {
       // 1) Start orchestrator (backend returns instanceId + statusQueryGetUri)
       const startResp = await this.http
         .post<{ instanceId?: string; id?: string; statusQueryGetUri?: string }>(
-          `${environment.aiApiBaseUrl}/api/start`,
+          `${environment.apiBaseUrl}/api/start`,
           {
             telemetry: 'Elevator vibration anomaly at 3.2Hz for 40 seconds.',
             ...(this.unitId() && { unitId: this.unitId() }),
@@ -211,7 +211,7 @@ export class CommunicationComponent implements OnInit, OnDestroy {
       // 2) Negotiate with instanceId (server sets userId = instanceId)
       const negResp = await this.http
         .get<{ url: string; accessToken: string }>(
-          `${environment.aiApiBaseUrl}/api/negotiate?instanceId=${instanceId}`
+          `${environment.apiBaseUrl}/api/negotiate?instanceId=${instanceId}`
         )
         .toPromise();
 
@@ -245,7 +245,7 @@ export class CommunicationComponent implements OnInit, OnDestroy {
         if (code) {
           try {
             const s = await this.http
-              .get<any>(`${environment.aiApiBaseUrl}/api/status/${instanceId}?code=${encodeURIComponent(code)}`)
+              .get<any>(`${environment.apiBaseUrl}/api/status/${instanceId}?code=${encodeURIComponent(code)}`)
               .toPromise();
             console.log('DURABLE STATUS:', s);
           } catch (e) {
