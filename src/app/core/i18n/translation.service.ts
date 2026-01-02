@@ -110,6 +110,17 @@ const enTranslations: Translations = {
     diagramPlaceholder: 'Diagram will appear here',
     installNgDiagram: 'Install ng-diagram package to enable diagram visualization',
   },
+  flow: {
+    start: {
+      title: 'Start Flow',
+      description: 'Start a new AI workflow for this unit.',
+      unitId: 'Unit ID',
+      telemetry: 'Telemetry',
+      telemetryPlaceholder: 'Enter telemetry data...',
+      button: 'Flow start',
+      starting: 'Starting...',
+    },
+  },
 };
 
 // Croatian translations
@@ -214,6 +225,17 @@ const hrTranslations: Translations = {
     eventLog: 'Dnevnik Događaja',
     diagramPlaceholder: 'Dijagram će se pojaviti ovdje',
     installNgDiagram: 'Instalirajte ng-diagram paket za omogućavanje vizualizacije dijagrama',
+  },
+  flow: {
+    start: {
+      title: 'Pokreni Flow',
+      description: 'Pokrenite novi AI workflow za ovaj unit.',
+      unitId: 'Unit ID',
+      telemetry: 'Telemetrija',
+      telemetryPlaceholder: 'Unesite telemetrijske podatke...',
+      button: 'Pokreni flow',
+      starting: 'Pokretanje...',
+    },
   },
 };
 

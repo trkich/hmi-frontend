@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../core/i18n/translation.service';
 import { Unit } from './unit.model';
+import { StartFlowModalComponent } from '../../shared/components/start-flow-modal/start-flow-modal.component';
 
 interface UnitJourneyInstance {
   instanceId: string;
@@ -27,7 +28,7 @@ interface StatusByUnitResponse {
 @Component({
   selector: 'app-unit-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslatePipe],
+  imports: [CommonModule, RouterLink, TranslatePipe, StartFlowModalComponent],
   templateUrl: './unit-view.component.html',
 })
 export class UnitViewComponent implements OnInit {
@@ -36,6 +37,7 @@ export class UnitViewComponent implements OnInit {
   private translationService = inject(TranslationService);
 
   unit = signal<Unit | null>(null);
+  unitId = signal<string | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
 
@@ -44,9 +46,13 @@ export class UnitViewComponent implements OnInit {
   aiStatusError = signal<string | null>(null);
   aiStatus = signal<StatusByUnitResponse | null>(null);
 
+  // Start flow modal
+  showStartFlowModal = signal(false);
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
+      this.unitId.set(id);
       this.loadUnit(Number(id));
       this.loadUnitAiStatus(id);
     }
@@ -85,7 +91,7 @@ export class UnitViewComponent implements OnInit {
     this.aiStatusError.set(null);
 
     this.http
-      .get<StatusByUnitResponse>(`${environment.apiBaseUrl}/api/executions/by-unit/${unitId}`)
+      .get<StatusByUnitResponse>(`${environment.apiBaseUrl}/agentic/flows?unitId=${unitId}`)
       .subscribe({
         next: (data) => {
           this.aiStatus.set(data);
@@ -107,6 +113,13 @@ export class UnitViewComponent implements OnInit {
     return status === 'online'
       ? this.translationService.translate('unit.online')
       : this.translationService.translate('unit.offline');
+  }
+
+  onFlowStarted(event: { instanceId: string }): void {
+    // Reload AI status to show the new instance
+    if (this.unitId()) {
+      this.loadUnitAiStatus(this.unitId()!);
+    }
   }
 }
 

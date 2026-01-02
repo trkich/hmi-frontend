@@ -1,0 +1,115 @@
+<div>
+  <!-- Loading state -->
+  <div *ngIf="loading()" class="flex items-center justify-center py-12">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error() && !loading()" class="alert alert-error mb-4">
+    <span>{{ error() }}</span>
+  </div>
+
+  <!-- Instance Details -->
+  <div *ngIf="!loading() && !error()" class="space-y-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-base-content">
+          Instance: {{ instanceId() }}
+        </h1>
+        <p *ngIf="unitId()" class="text-sm text-base-content/70 mt-1">
+          Unit #{{ unitId() }}
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <button
+          (click)="showDebriefModal.set(true)"
+          class="btn btn-primary"
+        >
+          {{ 'debriefing.title' | translate }}
+        </button>
+        <a
+          [routerLink]="['/unit', unitId()]"
+          class="btn btn-outline text-base-content"
+        >
+          {{ 'common.close' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Status Info -->
+    <div class="card bg-base-200 shadow border border-base-300">
+      <div class="card-body">
+        <div class="flex items-center gap-4">
+          <div class="text-sm text-base-content/70">
+            {{ 'communication.signalr' | translate }}: 
+            <span [class]="connected() ? 'text-success' : 'text-error'">
+              {{ connected() ? ('communication.connected' | translate) : ('communication.disconnected' | translate) }}
+            </span>
+          </div>
+          <div class="text-sm text-base-content/70">
+            {{ 'communication.progress' | translate }}: {{ progress() }}%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow Diagram -->
+    <div class="card bg-base-200 shadow border border-base-300">
+      <div class="card-body p-0">
+        <div class="flex flex-col" style="height: calc(100vh - 20rem);">
+          <div class="flex-1 grid grid-cols-[1fr_300px] overflow-hidden">
+            <!-- Diagram Area -->
+            <div class="relative border-r border-base-300 overflow-hidden bg-base-100" style="height: 100%;">
+              <ng-diagram
+                [model]="diagramModel()"
+                [nodeTemplateMap]="nodeTemplateMap()"
+                (selectionChanged)="onSelectionChanged($event)"
+                (diagramInit)="onDiagramInit($event)"
+                style="width: 100%; height: 100%;"
+              >
+                <ng-diagram-background />
+              </ng-diagram>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="bg-base-200 p-4 overflow-y-auto">
+              <h3 class="text-lg font-semibold text-base-content mb-4">
+                {{ 'communication.latestEvent' | translate }}
+              </h3>
+
+              <div *ngIf="!selectedEvent()" class="text-base-content/70">{{ 'communication.noEvents' | translate }}</div>
+              <div *ngIf="selectedEvent()">
+                <div class="space-y-2 mb-6">
+                  <div><strong class="text-base-content">{{ 'communication.step' | translate }}:</strong> {{ selectedEvent()!.step }}</div>
+                  <div><strong class="text-base-content">{{ 'communication.state' | translate }}:</strong> {{ selectedEvent()!.state }}</div>
+                  <div><strong class="text-base-content">{{ 'communication.message' | translate }}:</strong> {{ selectedEvent()!.message || '-' }}</div>
+                  <div><strong class="text-base-content">{{ 'communication.time' | translate }}:</strong> {{ selectedEvent()!.ts }}</div>
+                </div>
+
+                <h4 class="text-base font-semibold text-base-content mb-2">{{ 'communication.output' | translate }}</h4>
+                <pre class="bg-base-300 p-3 rounded text-xs text-base-content overflow-auto max-h-64">{{
+                  formatJsonOutput(selectedEvent()!.output)
+                }}</pre>
+              </div>
+
+              <h3 class="text-lg font-semibold text-base-content mt-6 mb-4">
+                {{ 'communication.eventLog' | translate }}
+              </h3>
+              <ol class="list-decimal list-inside space-y-1 text-sm text-base-content/70">
+                <li *ngFor="let event of events().slice(-30)">{{ event.step }} — {{ event.state }} — {{ event.percent }}%</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Debrief Modal -->
+<app-debrief-modal
+  *ngIf="showDebriefModal()"
+  [isOpen]="showDebriefModal()"
+  (close)="showDebriefModal.set(false)"
+></app-debrief-modal>
+

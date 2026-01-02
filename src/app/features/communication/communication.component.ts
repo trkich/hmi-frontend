@@ -28,7 +28,7 @@ export interface JourneyEvent {
   ts: string;
 }
 
-const stepOrder: StepId[] = [
+export const stepOrder: StepId[] = [
   'SENSING',
   'REASONING',
   'DECIDING',
@@ -38,7 +38,7 @@ const stepOrder: StepId[] = [
   'OPTIMIZATION',
 ];
 
-function stepLabel(step: StepId): string {
+export function stepLabel(step: StepId): string {
   const map: Record<StepId, string> = {
     SENSING: '01 Sensing',
     REASONING: '02 Reasoning',
@@ -189,7 +189,7 @@ export class CommunicationComponent implements OnInit, OnDestroy {
       // 1) Start orchestrator (backend returns instanceId + statusQueryGetUri)
       const startResp = await this.http
         .post<{ instanceId?: string; id?: string; statusQueryGetUri?: string }>(
-          `${environment.apiBaseUrl}/api/start`,
+          `${environment.apiBaseUrl}/agentic/start`,
           {
             telemetry: 'Elevator vibration anomaly at 3.2Hz for 40 seconds.',
             ...(this.unitId() && { unitId: this.unitId() }),

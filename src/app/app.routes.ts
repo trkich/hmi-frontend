@@ -4,9 +4,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { UnitComponent } from './features/unit/unit.component';
 import { UnitViewComponent } from './features/unit/unit-view.component';
 import { UnitEditComponent } from './features/unit/unit-edit.component';
+import { UnitInstanceDetailComponent } from './features/unit/unit-instance-detail.component';
 import { ProfileComponent } from './features/profile/profile.component';
-import { DebriefingComponent } from './features/debriefing/debriefing.component';
-import { CommunicationComponent } from './features/communication/communication.component';
 import { LayoutComponent } from './shared/components/layout/layout.component';
 import { authGuard } from './core/auth/auth.guard';
 import { guestGuard } from './core/auth/guest.guard';
@@ -39,16 +38,12 @@ export const routes: Routes = [
         component: UnitEditComponent,
       },
       {
+        path: 'unit/:unitId/instance/:instanceId',
+        component: UnitInstanceDetailComponent,
+      },
+      {
         path: 'user/profile',
         component: ProfileComponent,
-      },
-      {
-        path: 'debriefing',
-        component: DebriefingComponent,
-      },
-      {
-        path: 'communication',
-        component: CommunicationComponent,
       },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     ],

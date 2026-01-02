@@ -16,13 +16,12 @@
         {{ 'unit.title' | translate }} #{{ unit.id }}
       </h1>
       <div class="flex gap-2">
-        <a
-          [routerLink]="['/communication']"
-          [queryParams]="{ unitId: unit.id }"
+        <button
+          (click)="showStartFlowModal.set(true)"
           class="btn btn-secondary"
         >
-          AI Communication
-        </a>
+          {{ 'flow.start.button' | translate }}
+        </button>
         <a [routerLink]="['/unit', unit.id, 'edit']" class="btn btn-primary">
           {{ 'common.edit' | translate }}
         </a>
@@ -60,7 +59,7 @@
       <div class="card-body">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-base-content">
-            AI Communication history
+            Unit flows
           </h2>
         </div>
 
@@ -88,8 +87,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let inst of status.instances">
-                  <td class="font-mono text-xs">{{ inst.instanceId }}</td>
+                <tr *ngFor="let inst of status.instances" class="hover">
+                  <td class="font-mono text-xs">
+                    <a
+                      [routerLink]="['/unit', unitId(), 'instance', inst.instanceId]"
+                      class="link link-primary text-base-content hover:text-primary"
+                      [attr.title]="'View instance details'"
+                    >
+                      {{ inst.instanceId }}
+                    </a>
+                  </td>
                   <td>
                     <span class="badge badge-outline">
                       {{ inst.runtimeStatus }}
@@ -105,5 +112,13 @@
       </div>
     </div>
   </div>
+
+  <!-- Start Flow Modal -->
+  <app-start-flow-modal
+    [isOpen]="showStartFlowModal()"
+    [unitId]="unitId()"
+    (close)="showStartFlowModal.set(false)"
+    (flowStarted)="onFlowStarted($event)"
+  ></app-start-flow-modal>
 </div>
 

@@ -1,19 +1,22 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { AzureSpeechService } from '../../core/debriefing/azure-speech.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { AzureSpeechService } from '../../../core/debriefing/azure-speech.service';
 
 declare var SpeechSDK: any;
 
 @Component({
-  selector: 'app-debriefing',
+  selector: 'app-debrief-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslatePipe],
-  templateUrl: './debriefing.component.html',
+  templateUrl: './debrief-modal.component.html',
 })
-export class DebriefingComponent implements OnInit, OnDestroy {
+export class DebriefModalComponent implements OnInit, OnDestroy {
+  @Input() isOpen = false;
+  @Output() close = new EventEmitter<void>();
+
   private speechService = inject(AzureSpeechService);
 
   // State
@@ -37,22 +40,31 @@ export class DebriefingComponent implements OnInit, OnDestroy {
   selectedLanguage = signal('en-US');
 
   ngOnInit(): void {
-    this.initializeSpeechSDK();
+    if (this.isOpen) {
+      this.initializeSpeechSDK();
+    }
   }
 
   ngOnDestroy(): void {
     this.stopRecognizer();
   }
 
+  onOpenChange(): void {
+    if (this.isOpen) {
+      this.initializeSpeechSDK();
+    } else {
+      this.stopRecognizer();
+      this.close.emit();
+    }
+  }
+
   private async initializeSpeechSDK(): Promise<void> {
     try {
-      // Check if SpeechSDK is available
       if (typeof SpeechSDK === 'undefined') {
         this.status.set('Speech SDK not loaded. Please include the SDK script.');
         return;
       }
 
-      // Get token from backend
       this.status.set('Getting authentication token...');
       const tokenResponse = await firstValueFrom(this.speechService.getToken());
       
@@ -63,13 +75,11 @@ export class DebriefingComponent implements OnInit, OnDestroy {
 
       this.status.set('Initializing speech recognition...');
       
-      // Create speech config with token
       this.speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(
         tokenResponse.token,
         tokenResponse.region || 'eastus'
       );
       
-      // Set language
       this.speechConfig.speechRecognitionLanguage = this.selectedLanguage();
 
       this.isInitialized.set(true);
@@ -86,25 +96,18 @@ export class DebriefingComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Create audio config (use default microphone)
       const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-      
-      // Update language if changed
       this.speechConfig.speechRecognitionLanguage = this.selectedLanguage();
 
-      // Create recognizer
       this.recognizer = new SpeechSDK.SpeechRecognizer(this.speechConfig, audioConfig);
 
-      // Set up event handlers
       this.recognizer.recognizing = (s: any, e: any) => {
-        // Intermediate results (while speaking)
         if (e.result.reason === SpeechSDK.ResultReason.RecognizingSpeech) {
           this.status.set(`Listening... (${e.result.text})`);
         }
       };
 
       this.recognizer.recognized = (s: any, e: any) => {
-        // Final result
         if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
           const newText = this.recognizedText() + (this.recognizedText() ? ' ' : '') + e.result.text;
           this.recognizedText.set(newText);
@@ -131,7 +134,6 @@ export class DebriefingComponent implements OnInit, OnDestroy {
         this.recognizer = null;
       };
 
-      // Start continuous recognition
       this.recognizer.startContinuousRecognitionAsync(
         () => {
           this.isListening.set(true);
@@ -155,7 +157,6 @@ export class DebriefingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Save reference to recognizer before clearing
     const recognizerRef = this.recognizer;
     this.recognizer = null;
     this.isListening.set(false);
@@ -207,6 +208,11 @@ export class DebriefingComponent implements OnInit, OnDestroy {
       console.error('Failed to copy:', error);
       this.status.set('Failed to copy text to clipboard.');
     }
+  }
+
+  closeModal(): void {
+    this.stopRecognizer();
+    this.close.emit();
   }
 }
 
