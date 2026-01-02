@@ -71,12 +71,12 @@
           <span>{{ aiStatusError() }}</span>
         </div>
 
-        <div *ngIf="!aiStatusLoading() && !aiStatusError() && aiStatus() as status">
-          <div *ngIf="status.count === 0" class="text-sm text-base-content/70">
+        <div *ngIf="!aiStatusLoading() && !aiStatusError()">
+          <div *ngIf="aiStatus().length === 0" class="text-sm text-base-content/70">
             No AI communication runs for this unit yet.
           </div>
 
-          <div *ngIf="status.count > 0" class="overflow-x-auto">
+          <div *ngIf="aiStatus().length > 0" class="overflow-x-auto">
             <table class="table table-sm">
               <thead>
                 <tr>
@@ -87,7 +87,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let inst of status.instances" class="hover">
+                <tr *ngFor="let inst of aiStatus()" class="hover">
                   <td class="font-mono text-xs">
                     <a
                       [routerLink]="['/unit', unitId(), 'instance', inst.instanceId]"

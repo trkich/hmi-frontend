@@ -19,11 +19,7 @@ interface UnitJourneyInstance {
   output?: any;
 }
 
-interface StatusByUnitResponse {
-  unitId: string;
-  count: number;
-  instances: UnitJourneyInstance[];
-}
+// Response is now directly an array of UnitJourneyInstance
 
 @Component({
   selector: 'app-unit-view',
@@ -44,7 +40,7 @@ export class UnitViewComponent implements OnInit {
   // AI communication history (status/by-unit)
   aiStatusLoading = signal(false);
   aiStatusError = signal<string | null>(null);
-  aiStatus = signal<StatusByUnitResponse | null>(null);
+  aiStatus = signal<UnitJourneyInstance[]>([]);
 
   // Start flow modal
   showStartFlowModal = signal(false);
@@ -91,10 +87,10 @@ export class UnitViewComponent implements OnInit {
     this.aiStatusError.set(null);
 
     this.http
-      .get<StatusByUnitResponse>(`${environment.apiBaseUrl}/agentic/flows?unitId=${unitId}`)
+      .get<UnitJourneyInstance[]>(`${environment.apiBaseUrl}/agentic/flows?unitId=${unitId}`)
       .subscribe({
         next: (data) => {
-          this.aiStatus.set(data);
+          this.aiStatus.set(Array.isArray(data) ? data : []);
           this.aiStatusLoading.set(false);
         },
         error: (err) => {
