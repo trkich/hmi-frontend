@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { environment } from '../../../environments/environment';
@@ -19,6 +20,7 @@ import * as signalR from '@microsoft/signalr';
 })
 export class UnitInstanceDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private http = inject(HttpClient);
   private modelService = inject(NgDiagramModelService);
   
@@ -64,6 +66,29 @@ export class UnitInstanceDetailComponent implements OnInit, OnDestroy {
     } else {
       this.error.set('Instance ID is required');
       this.loading.set(false);
+    }
+
+    // Check if debriefing query param is present
+    const debriefing = this.route.snapshot.queryParamMap.get('debriefing');
+    this.showDebriefModal.set(debriefing === 'true');
+
+    // Listen to route changes to update modal state
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const debriefing = this.route.snapshot.queryParamMap.get('debriefing');
+        this.showDebriefModal.set(debriefing === 'true');
+      });
+  }
+
+  closeDebriefModal(): void {
+    this.showDebriefModal.set(false);
+    const unitId = this.unitId();
+    const instanceId = this.instanceId();
+    if (unitId && instanceId) {
+      this.router.navigate(['/unit', unitId, 'instance', instanceId], {
+        queryParams: {},
+      });
     }
   }
 

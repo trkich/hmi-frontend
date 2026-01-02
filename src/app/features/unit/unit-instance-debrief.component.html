@@ -1,0 +1,124 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-semibold text-base-content">
+      {{ 'debriefing.title' | translate }}
+    </h1>
+    <button (click)="goBack()" class="btn btn-outline text-base-content">
+      {{ 'common.close' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="instanceId()" class="text-sm text-base-content/70 mb-4">
+    Instance: {{ instanceId() }}
+  </div>
+
+  <!-- Status Card -->
+  <div class="card bg-base-200 shadow border border-base-300">
+    <div class="card-body">
+      <h4 class="card-title text-base-content text-sm mb-2">
+        <i class="fa-solid fa-info-circle"></i>
+        {{ 'debriefing.status' | translate }}
+      </h4>
+      <div class="alert" [ngClass]="{
+        'alert-info': !isListening() && isInitialized(),
+        'alert-success': isListening(),
+        'alert-warning': !isInitialized()
+      }">
+        <span class="text-base-content text-sm">{{ status() || 'Initializing...' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Card -->
+  <div class="card bg-base-200 shadow border border-base-300">
+    <div class="card-body">
+      <h4 class="card-title text-base-content text-sm mb-2">
+        <i class="fa-solid fa-microphone"></i>
+        {{ 'debriefing.controls' | translate }}
+      </h4>
+
+      <!-- Language Selection -->
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text text-base-content font-medium text-sm">{{ 'debriefing.language' | translate }}</span>
+        </label>
+        <select
+          [value]="selectedLanguage()"
+          (change)="onLanguageChange($any($event.target).value)"
+          class="select select-bordered w-full bg-base-100 text-base-content"
+          [disabled]="isListening()"
+        >
+          <option *ngFor="let lang of languages" [value]="lang.code">
+            {{ lang.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2">
+        <button
+          (click)="startRecognition()"
+          class="btn btn-primary flex-1"
+          [disabled]="!isInitialized() || isListening()"
+        >
+          <i class="fa-solid fa-play"></i>
+          {{ 'debriefing.start' | translate }}
+        </button>
+
+        <button
+          (click)="stopRecognizer()"
+          class="btn btn-error flex-1"
+          [disabled]="!isListening()"
+        >
+          <i class="fa-solid fa-stop"></i>
+          {{ 'debriefing.stop' | translate }}
+        </button>
+
+        <button
+          (click)="clearText()"
+          class="btn btn-ghost text-base-content"
+          [disabled]="!recognizedText()"
+        >
+          <i class="fa-solid fa-trash"></i>
+          {{ 'debriefing.clear' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recognized Text Card -->
+  <div class="card bg-base-200 shadow border border-base-300">
+    <div class="card-body">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="card-title text-base-content text-sm">
+          <i class="fa-solid fa-text-width"></i>
+          {{ 'debriefing.recognizedText' | translate }}
+        </h4>
+        <div class="badge badge-info badge-sm" *ngIf="recognizedText()">
+          {{ recognizedText().split(' ').length }} {{ 'debriefing.words' | translate }}
+        </div>
+      </div>
+
+      <div class="form-control">
+        <textarea
+          class="textarea textarea-bordered w-full h-48 bg-base-100 text-base-content text-sm"
+          [value]="recognizedText()"
+          readonly
+          [placeholder]="'debriefing.textPlaceholder' | translate"
+        ></textarea>
+      </div>
+
+      <!-- Copy Button -->
+      <div class="card-actions justify-end mt-2" *ngIf="recognizedText()">
+        <button
+          (click)="copyToClipboard()"
+          class="btn btn-sm btn-outline text-base-content"
+        >
+          <i class="fa-solid fa-copy"></i>
+          {{ 'debriefing.copy' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

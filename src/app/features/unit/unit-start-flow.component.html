@@ -1,0 +1,71 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-semibold text-base-content">
+      {{ 'flow.start.title' | translate }}
+    </h1>
+    <button (click)="goBack()" class="btn btn-outline text-base-content">
+      {{ 'common.close' | translate }}
+    </button>
+  </div>
+
+  <div class="card bg-base-200 shadow border border-base-300">
+    <div class="card-body">
+      <p class="text-sm text-base-content/70 mb-4">
+        {{ 'flow.start.description' | translate }}
+      </p>
+
+      <!-- Unit ID Info -->
+      <div class="mb-4">
+        <div class="flex items-center gap-2 text-base-content font-semibold mb-2">
+          <i class="fa-solid fa-info-circle"></i>
+          <span>{{ 'flow.start.unitId' | translate }}</span>
+        </div>
+        <div class="text-base-content text-lg font-mono">
+          {{ unitId() || '-' }}
+        </div>
+      </div>
+
+      <!-- Telemetry Input -->
+      <div class="mb-4">
+        <div class="flex items-center gap-2 text-base-content font-semibold mb-3">
+          <i class="fa-solid fa-message"></i>
+          <span>{{ 'flow.start.telemetry' | translate }}</span>
+        </div>
+
+        <div class="form-control">
+          <textarea
+            [(ngModel)]="telemetry"
+            class="textarea textarea-bordered w-full h-32 bg-base-100 text-base-content"
+            [placeholder]="'flow.start.telemetryPlaceholder' | translate"
+            [disabled]="isStarting()"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="error()" class="alert alert-error mb-4">
+        <span>{{ error() }}</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4">
+        <button
+          (click)="startFlow()"
+          class="btn btn-primary"
+          [disabled]="isStarting() || !unitId()"
+        >
+          <span *ngIf="isStarting()" class="loading loading-spinner loading-sm mr-2"></span>
+          <span *ngIf="!isStarting()">
+            <i class="fa-solid fa-play mr-2"></i>
+            {{ 'flow.start.button' | translate }}
+          </span>
+          <span *ngIf="isStarting()">{{ 'flow.start.starting' | translate }}</span>
+        </button>
+        <button (click)="goBack()" class="btn btn-outline text-base-content" [disabled]="isStarting()">
+          {{ 'common.cancel' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

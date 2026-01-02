@@ -1,6 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -29,6 +30,7 @@ interface UnitJourneyInstance {
 })
 export class UnitViewComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private http = inject(HttpClient);
   private translationService = inject(TranslationService);
 
@@ -42,7 +44,8 @@ export class UnitViewComponent implements OnInit {
   aiStatusError = signal<string | null>(null);
   aiStatus = signal<UnitJourneyInstance[]>([]);
 
-  // Start flow modal
+  // Check if debug mode is enabled via query param
+  showStartFlowButton = signal(false);
   showStartFlowModal = signal(false);
 
   ngOnInit(): void {
@@ -51,6 +54,41 @@ export class UnitViewComponent implements OnInit {
       this.unitId.set(id);
       this.loadUnit(Number(id));
       this.loadUnitAiStatus(id);
+    }
+
+    // Check debug and flow-start query params
+    this.updateQueryParams();
+
+    // Listen to route changes to update modal state
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.updateQueryParams();
+      });
+  }
+
+  private updateQueryParams(): void {
+    const debug = this.route.snapshot.queryParamMap.get('debug');
+    const flowStart = this.route.snapshot.queryParamMap.get('flow-start');
+    
+    this.showStartFlowButton.set(debug === 'true');
+    this.showStartFlowModal.set(debug === 'true' && flowStart === 'true');
+  }
+
+  closeStartFlowModal(): void {
+    this.showStartFlowModal.set(false);
+    const unitId = this.unitId();
+    if (unitId) {
+      this.router.navigate(['/unit', unitId], {
+        queryParams: { debug: 'true' },
+      });
+    }
+  }
+
+  onFlowStarted(event: { instanceId: string }): void {
+    // Reload AI status to show the new instance
+    if (this.unitId()) {
+      this.loadUnitAiStatus(this.unitId()!);
     }
   }
 
@@ -111,11 +149,5 @@ export class UnitViewComponent implements OnInit {
       : this.translationService.translate('unit.offline');
   }
 
-  onFlowStarted(event: { instanceId: string }): void {
-    // Reload AI status to show the new instance
-    if (this.unitId()) {
-      this.loadUnitAiStatus(this.unitId()!);
-    }
-  }
 }
 

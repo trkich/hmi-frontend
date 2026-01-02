@@ -21,12 +21,13 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <button
-          (click)="showDebriefModal.set(true)"
+        <a
+          [routerLink]="['/unit', unitId(), 'instance', instanceId()]"
+          [queryParams]="{ debriefing: 'true' }"
           class="btn btn-primary"
         >
           {{ 'debriefing.title' | translate }}
-        </button>
+        </a>
         <a
           [routerLink]="['/unit', unitId()]"
           class="btn btn-outline text-base-content"
@@ -104,12 +105,12 @@
       </div>
     </div>
   </div>
+  
+  <!-- Debrief Modal -->
+  <app-debrief-modal
+    *ngIf="showDebriefModal()"
+    [isOpen]="showDebriefModal()"
+    (close)="closeDebriefModal()"
+  ></app-debrief-modal>
 </div>
-
-<!-- Debrief Modal -->
-<app-debrief-modal
-  *ngIf="showDebriefModal()"
-  [isOpen]="showDebriefModal()"
-  (close)="showDebriefModal.set(false)"
-></app-debrief-modal>
 

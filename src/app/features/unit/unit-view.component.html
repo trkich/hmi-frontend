@@ -16,12 +16,14 @@
         {{ 'unit.title' | translate }} #{{ unit.id }}
       </h1>
       <div class="flex gap-2">
-        <button
-          (click)="showStartFlowModal.set(true)"
+        <a
+          *ngIf="showStartFlowButton()"
+          [routerLink]="['/unit', unit.id]"
+          [queryParams]="{ debug: 'true', 'flow-start': 'true' }"
           class="btn btn-secondary"
         >
           {{ 'flow.start.button' | translate }}
-        </button>
+        </a>
         <a [routerLink]="['/unit', unit.id, 'edit']" class="btn btn-primary">
           {{ 'common.edit' | translate }}
         </a>
@@ -115,9 +117,10 @@
 
   <!-- Start Flow Modal -->
   <app-start-flow-modal
+    *ngIf="showStartFlowModal()"
     [isOpen]="showStartFlowModal()"
     [unitId]="unitId()"
-    (close)="showStartFlowModal.set(false)"
+    (close)="closeStartFlowModal()"
     (flowStarted)="onFlowStarted($event)"
   ></app-start-flow-modal>
 </div>
