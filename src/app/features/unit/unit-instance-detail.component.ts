@@ -272,9 +272,10 @@ export class UnitInstanceDetailComponent implements OnInit, OnDestroy {
 
       // 2) Try to negotiate SignalR connection (may fail for completed instances)
       try {
+        const userId = instanceId; // Use instanceId as userId (required by hmi-ai-agents)
         const negResp = await this.http
           .get<{ url: string; accessToken: string }>(
-            `${environment.apiBaseUrl}/agentic/negotiate?instanceId=${instanceId}`
+            `${environment.apiBaseUrl}/agentic/negotiate?instanceId=${instanceId}&userId=${encodeURIComponent(userId)}`
           )
           .toPromise();
 

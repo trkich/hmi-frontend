@@ -208,10 +208,11 @@ export class CommunicationComponent implements OnInit, OnDestroy {
 
       this.instanceId.set(instanceId);
 
-      // 2) Negotiate with instanceId (server sets userId = instanceId)
+      // 2) Negotiate with instanceId (userId is required)
+      const userId = instanceId; // Use instanceId as userId
       const negResp = await this.http
         .get<{ url: string; accessToken: string }>(
-          `${environment.apiBaseUrl}/api/negotiate?instanceId=${instanceId}`
+          `${environment.apiBaseUrl}/agentic/negotiate?instanceId=${instanceId}&userId=${encodeURIComponent(userId)}`
         )
         .toPromise();
 

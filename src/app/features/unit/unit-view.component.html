@@ -63,6 +63,12 @@
           <h2 class="text-lg font-semibold text-base-content">
             Unit flows
           </h2>
+          <div class="text-sm text-base-content/70">
+            SignalR: 
+            <span [class]="flowsConnected() ? 'text-success' : 'text-error'">
+              {{ flowsConnected() ? 'Connected' : 'Disconnected' }}
+            </span>
+          </div>
         </div>
 
         <div *ngIf="aiStatusLoading()" class="flex items-center justify-center py-6">
