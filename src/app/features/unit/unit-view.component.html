@@ -88,10 +88,10 @@
             <table class="table table-sm">
               <thead>
                 <tr>
-                  <th>Instance ID</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                  <th>Last updated</th>
+                  <th class="text-base-content">Instance ID</th>
+                  <th class="text-base-content">Status</th>
+                  <th class="text-base-content">Created</th>
+                  <th class="text-base-content">Last updated</th>
                 </tr>
               </thead>
               <tbody>
@@ -105,13 +105,13 @@
                       {{ inst.instanceId }}
                     </a>
                   </td>
-                  <td>
+                  <td class="text-base-content">
                     <span class="badge badge-outline">
                       {{ inst.runtimeStatus }}
                     </span>
                   </td>
-                  <td>{{ inst.createdTime | date: 'short' }}</td>
-                  <td>{{ inst.lastUpdatedTime | date: 'short' }}</td>
+                  <td class="text-base-content">{{ inst.createdTime | date: 'short' }}</td>
+                  <td class="text-base-content">{{ inst.lastUpdatedTime | date: 'short' }}</td>
                 </tr>
               </tbody>
             </table>
