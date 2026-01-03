@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -21,6 +21,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private destroy$ = new Subject<void>();
   currentRoute = signal<string>('');
+  @Output() closeSidebar = new EventEmitter<void>();
 
   menuItems: MenuItem[] = [
     {
@@ -47,6 +48,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       )
       .subscribe((event: any) => {
         this.currentRoute.set(event.url);
+        // Close sidebar on mobile when route changes
+        this.closeSidebar.emit();
       });
   }
 

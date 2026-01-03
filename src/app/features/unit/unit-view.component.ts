@@ -287,5 +287,19 @@ export class UnitViewComponent implements OnInit, OnDestroy {
       : this.translationService.translate('unit.offline');
   }
 
+  getRuntimeStatusClass(runtimeStatus: string): string {
+    const status = runtimeStatus?.toLowerCase() || '';
+    if (status === 'completed') {
+      return 'badge-outline badge-success';
+    } else if (status === 'running') {
+      return 'badge-outline badge-warning';
+    } else if (status === 'failed' || status === 'terminated' || status === 'canceled') {
+      return 'badge-outline badge-error';
+    } else if (status === 'pending' || status === 'scheduled') {
+      return 'badge-outline badge-info';
+    }
+    return 'badge-outline';
+  }
+
 }
 

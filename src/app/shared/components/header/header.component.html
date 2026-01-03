@@ -1,6 +1,27 @@
-<header class="w-full border-b border-base-300 bg-base-100/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-  <!-- Left: Dark mode toggle -->
-  <div class="flex items-center">
+<header class="w-full border-b border-base-300 bg-base-100/80 backdrop-blur-md px-4 sm:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+  <!-- Left: Hamburger menu (mobile) + Dark mode toggle -->
+  <div class="flex items-center gap-2">
+    <!-- Hamburger Menu (Mobile Only) -->
+    <button
+      (click)="onToggleSidebar()"
+      class="btn btn-ghost btn-sm btn-circle text-base-content lg:hidden"
+      [attr.title]="'Toggle menu'"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+    </button>
+    <!-- Dark mode toggle -->
     <button
       (click)="toggleTheme()"
       class="btn btn-ghost btn-sm btn-circle text-base-content"

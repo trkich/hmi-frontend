@@ -10,12 +10,12 @@
   </div>
 
   <!-- Edit Form -->
-  <div *ngIf="!loading() && !error()" class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold text-base-content">
+  <div *ngIf="!loading() && !error()" class="space-y-4 sm:space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h1 class="text-xl sm:text-2xl font-semibold text-base-content">
         {{ 'unit.title' | translate }} #{{ unit.id }} - {{ 'common.edit' | translate }}
       </h1>
-      <a [routerLink]="['/unit', unit.id]" class="btn btn-outline text-base-content">
+      <a [routerLink]="['/unit', unit.id]" class="btn btn-outline text-base-content btn-sm sm:btn-md">
         {{ 'common.cancel' | translate }}
       </a>
     </div>
@@ -52,11 +52,11 @@
           <span>{{ error() }}</span>
         </div>
         
-        <div class="card-actions justify-end mt-6">
-          <button (click)="cancel()" class="btn btn-outline text-base-content" [disabled]="saving()">
+        <div class="card-actions justify-end mt-6 flex-col sm:flex-row gap-2">
+          <button (click)="cancel()" class="btn btn-outline text-base-content w-full sm:w-auto" [disabled]="saving()">
             {{ 'common.cancel' | translate }}
           </button>
-          <button (click)="saveUnit()" class="btn btn-primary" [disabled]="saving()">
+          <button (click)="saveUnit()" class="btn btn-primary w-full sm:w-auto" [disabled]="saving()">
             <span *ngIf="saving()" class="loading loading-spinner loading-sm"></span>
             <span *ngIf="!saving()">{{ 'common.save' | translate }}</span>
           </button>

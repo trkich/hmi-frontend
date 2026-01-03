@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -16,6 +16,9 @@ export class HeaderComponent {
   private router = inject(Router);
   private themeService = inject(ThemeService);
 
+  @Input() sidebarOpen = false;
+  @Output() toggleSidebar = new EventEmitter<void>();
+
   user = computed(() => this.auth.user());
   isDark = computed(() => this.themeService.isDark());
 
@@ -25,6 +28,10 @@ export class HeaderComponent {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  onToggleSidebar(): void {
+    this.toggleSidebar.emit();
   }
 }
 

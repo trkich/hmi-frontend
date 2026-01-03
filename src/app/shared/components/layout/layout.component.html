@@ -1,15 +1,27 @@
 <div class="flex h-screen bg-base-100">
+  <!-- Sidebar Drawer Backdrop (Mobile Only) -->
+  <div
+    *ngIf="sidebarOpen()"
+    class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+    (click)="closeSidebar()"
+  ></div>
+
   <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+  <aside
+    class="w-64 bg-base-200 border-r border-base-300 flex flex-col h-screen fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
+    [class.translate-x-0]="sidebarOpen()"
+  >
+    <app-sidebar (closeSidebar)="closeSidebar()"></app-sidebar>
+  </aside>
 
   <!-- Main Content Area -->
-  <div class="flex-1 flex flex-col overflow-hidden">
+  <div class="flex-1 flex flex-col overflow-hidden min-w-0">
     <!-- Header -->
-    <app-header></app-header>
+    <app-header [sidebarOpen]="sidebarOpen()" (toggleSidebar)="toggleSidebar()"></app-header>
 
     <!-- Page Content -->
     <main class="flex-1 overflow-y-auto bg-base-100">
-      <div class="p-6">
+      <div class="p-4 sm:p-6">
         <router-outlet></router-outlet>
       </div>
     </main>

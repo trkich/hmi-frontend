@@ -10,24 +10,24 @@
   </div>
 
   <!-- Unit Details -->
-  <div *ngIf="!loading() && !error() && unit() as unit" class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold text-base-content">
+  <div *ngIf="!loading() && !error() && unit() as unit" class="space-y-4 sm:space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h1 class="text-xl sm:text-2xl font-semibold text-base-content">
         {{ 'unit.title' | translate }} #{{ unit.id }}
       </h1>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap gap-2">
         <a
           *ngIf="showStartFlowButton()"
           [routerLink]="['/unit', unit.id]"
           [queryParams]="{ debug: 'true', 'flow-start': 'true' }"
-          class="btn btn-secondary"
+          class="btn btn-secondary btn-sm sm:btn-md"
         >
           {{ 'flow.start.button' | translate }}
         </a>
-        <a [routerLink]="['/unit', unit.id, 'edit']" class="btn btn-primary">
+        <a [routerLink]="['/unit', unit.id, 'edit']" class="btn btn-primary btn-sm sm:btn-md">
           {{ 'common.edit' | translate }}
         </a>
-        <a [routerLink]="['/unit']" class="btn btn-outline text-base-content">
+        <a [routerLink]="['/unit']" class="btn btn-outline text-base-content btn-sm sm:btn-md">
           {{ 'common.close' | translate }}
         </a>
       </div>
@@ -59,7 +59,7 @@
     <!-- AI Communication history -->
     <div class="card bg-base-200 shadow border border-base-300 mt-4">
       <div class="card-body">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
           <h2 class="text-lg font-semibold text-base-content">
             Unit flows
           </h2>
@@ -106,7 +106,7 @@
                     </a>
                   </td>
                   <td class="text-base-content">
-                    <span class="badge badge-outline">
+                    <span class="badge" [ngClass]="getRuntimeStatusClass(inst.runtimeStatus)">
                       {{ inst.runtimeStatus }}
                     </span>
                   </td>
